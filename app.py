@@ -276,6 +276,24 @@ def main():
         "Life cover (death benefit) only. For information purposes only — always verify with the current PDS."
     )
 
+    with st.expander("ℹ️ About this tool", expanded=False):
+        st.markdown(
+            "**The problem:** Life insurance PDS documents are long, dense, and written in legal language. "
+            "Customers often sign policies without understanding key terms — particularly around terminal "
+            "illness definitions, what reduces the sum insured, and when exclusions apply. "
+            "Most customers rely entirely on financial advice without the ability to independently "
+            "verify what they are buying.\n\n"
+            "**The approach:** This tool extracts and restructures information from publicly available "
+            "PDS documents so customers can understand their cover, compare key differences, and "
+            "walk into any advisory conversation already informed. A rule-based flag engine maps "
+            "each customer's situation to the policy terms most relevant to them.\n\n"
+            "**Scope:** This is a working prototype built for illustration. Data is sourced from the "
+            "PDS versions listed in the Disclaimer tab and reflects the author's interpretation at "
+            "the time of extraction. A production version would require regular PDS monitoring, "
+            "independent review, and legal sign-off before being made available to the general public.\n\n"
+            "*Built by Amy Wang — actuary (FIAA), 11 years in Australian life insurance and reinsurance.*"
+        )
+
     data = load_data()
 
     if data is None:

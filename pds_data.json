@@ -1,0 +1,455 @@
+{
+  "TAL": {
+    "insurer": "TAL",
+    "product_name": "Accelerated Protection",
+    "pds_version": "12 December 2025",
+    "_meta": {
+      "insurer": "TAL",
+      "product": "Accelerated Protection",
+      "pds_version": "12 December 2025",
+      "pdf_file": "TAL_Accelerated_Protection_PDS_Dec2025.pdf",
+      "extracted_on": "2026-04-11",
+      "tool": "PDSCompareTool v1 — manually extracted from PDS"
+    },
+    "life_cover": {
+      "what_triggers_payment": "The Benefit Amount is payable when the Life Insured dies. The Terminal Illness Benefit (early payment of the full Benefit Amount) is payable when the Life Insured is diagnosed as Terminally Ill.",
+
+      "terminal_illness": {
+        "definition": "The Life Insured has an incurable Sickness or Injury and: (a) has a life expectancy of less than 12 months, OR (b) requires palliative care (care or treatment to improve quality of living provided by an accredited medical provider/facility). Two treating Medical Practitioners must certify, one of whom must be a specialist treating the condition.",
+        "advance_payment": "Yes — the full Benefit Amount is paid in advance on Terminal Illness diagnosis.",
+        "reduces_death_benefit": "Yes — if Terminal Illness Benefit is paid, all Attached or Linked Plans (TPD, Trauma) are cancelled. Any cover bought back under Death Buy-Back Option is issued subject to original limitations."
+      },
+
+      "suicide_exclusion": {
+        "period": "13 months",
+        "applies_from": "Plan start date; recommences from date of reinstatement if plan is reinstated; recommences for increase amounts from the date of any applied-for increase.",
+        "exact_wording": "No payments will be made under Life Insurance, and any included or optional benefits (if applicable), if the claim arises directly or indirectly because of an intentional, self-inflicted act by the Life Insured: within 13 months after the Plan start date; within 13 months after the date of any increase or loading applies for, and but only in respect of the increase; within 13 months after the most recent date to which an agreed to reinstate either the Plan or Policy.",
+        "waiver": "The exclusion is waived if the customer had death cover with TAL or another insurer in force for at least 13 consecutive months immediately before the Plan start date (without cancellation/reinstatement) and has replaced it — waiver only applies up to the level of cover replaced."
+      },
+
+      "key_exclusions": [
+        "Intentional self-inflicted act within 13 months of plan start, reinstatement, or increase date (suicide exclusion)",
+        "Any special condition listed on the Policy Schedule (insurer can add individual exclusions based on underwriting)",
+        "Misrepresentation: policy may be avoided or benefit reduced if duty to take reasonable care not to make a misrepresentation was breached at application, reinstatement, or change",
+        "Fraudulent claims: policy may be cancelled and claim refused"
+      ],
+
+      "built_in_benefits": [
+        {
+          "name": "Advanced Payment Benefit",
+          "description": "Pays 10% of the Benefit Amount (up to $25,000) as soon as TAL receives the death certificate or medical certificate confirming death — before the full claim is finalised. Intended to cover immediate funeral and estate costs.",
+          "any_catch": "In the first 3 years from the Plan start date, the Advanced Payment Benefit is ONLY payable if death resulted from an Accident. After 3 years, it applies for all causes (unless excluded). The advance REDUCES the final death benefit by the amount paid."
+        },
+        {
+          "name": "Repatriation Benefit",
+          "description": "If the Life Insured dies overseas, the maximum Advanced Payment Benefit is increased to 10% of the Benefit Amount up to $35,000 (instead of $25,000) to help cover costs of repatriating the body.",
+          "any_catch": "Still subject to the 3-year Accident-only restriction on the underlying Advanced Payment Benefit."
+        },
+        {
+          "name": "Inflation Protection Benefit",
+          "description": "Automatically increases the Benefit Amount on each Policy anniversary by the greater of 5% or the Indexation Factor (CPI-based), to help keep pace with inflation. Premium increases accordingly.",
+          "any_catch": "You can opt out (via Premium Freeze Benefit instead), but inflation protection applies by default. The benefit ceases to apply to TPD Insurance if the total TPD Benefit Amount on the policy would exceed $5 million after the increase."
+        },
+        {
+          "name": "Guaranteed Future Insurability Benefit",
+          "description": "Allows the customer to apply to increase cover without providing additional health information when a significant life event occurs (e.g. marriage, childbirth, taking out a mortgage).",
+          "any_catch": "None significant — standard industry feature."
+        },
+        {
+          "name": "Financial Planning Benefit",
+          "description": "Reimburses up to $5,000 on fees for professional financial planning advice after TAL pays 100% of the Benefit Amount. The financial plan must be prepared by a financial adviser within 12 months of the claim payment date.",
+          "any_catch": "Applies only when 100% of the Benefit Amount is paid. Requires evidence of the financial plan."
+        },
+        {
+          "name": "Long Distance Accommodation Benefit",
+          "description": "Reimburses up to $250 per day, up to 14 days, for accommodation costs of an Immediate Family Member who travels more than 100 km to be with the Life Insured.",
+          "any_catch": "Only available when the Life Insured is Bed Confined more than 100 km from their usual residence AND the Terminal Illness Benefit, 100% of TPD Insurance Benefit Amount, or 100% of Critical Illness Insurance Benefit Amount has been paid. The 14-day limit is lower than AIA's 30-day limit."
+        },
+        {
+          "name": "Grief Support Benefit",
+          "description": "Available to the Life Insured or Immediate Family Member. Provides access to grief counselling or support services.",
+          "any_catch": "Details of dollar amount and session limits not fully specified in at-a-glance section — check full PDS."
+        },
+        {
+          "name": "Premium Freeze Benefit",
+          "description": "Allows the customer to freeze premiums so they stay the same each year, in exchange for the Benefit Amount reducing annually.",
+          "any_catch": "Only available if Variable Age-Stepped Premiums have been selected and the Life Insured is at least 30 years of age. The reduction in Benefit Amount is calculated based on age and premium rates — over time, cover reduces significantly."
+        }
+      ],
+
+      "optional_add_ons": [
+        {
+          "name": "Premium Relief Option",
+          "description": "Waives premiums if the Life Insured is totally unable to work for at least 3 consecutive months due to Sickness or Injury. Ends when capable of working/earning income or at policy anniversary before age 65.",
+          "extra_cost": "yes"
+        },
+        {
+          "name": "Business Insurance Option",
+          "description": "Allows the customer to apply to increase cover without providing additional health information when a specified business event occurs (e.g. buying out a business partner).",
+          "extra_cost": "yes"
+        },
+        {
+          "name": "Death Buy-Back Option",
+          "description": "After 100% of a Linked TPD or Critical Illness Benefit is paid (reducing the Life Insurance Benefit Amount), this option allows the customer to buy back life cover. Must be exercised within 30 days of the 12-month anniversary of formal claim notification.",
+          "extra_cost": "yes"
+        }
+      ],
+
+      "policy_expiry": {
+        "expiry_age": "Policy anniversary before the Life Insured's 100th birthday",
+        "any_conditions": "If structured through TAL Super or a retail superannuation fund, cover ends at the policy anniversary before the 75th birthday (unless ownership is transferred outside superannuation before then). Variable Age-Stepped Premiums available from entry age 19; Variable Premiums available 19–60."
+      },
+
+      "sum_insured": {
+        "minimum": "Not specified (any financially justifiable amount)",
+        "maximum": "Any financially justifiable amount (no stated maximum)",
+        "indexation": "Automatic annual indexation by greater of 5% or CPI is built in (Inflation Protection Benefit). Customer can opt out or switch to Premium Freeze Benefit."
+      },
+
+      "waiting_periods": "No waiting periods for life cover other than the 13-month suicide exclusion. In the first 3 years, the Advanced Payment Benefit is restricted to Accidental death only.",
+
+      "duty_of_disclosure": "When applying for, reinstating, or changing the Policy, the customer (and Life Insured) must take reasonable care not to make a misrepresentation. TAL will ask specific questions on the application form — answer those honestly and to the best of your knowledge. Since the Insurance Contracts Act 2021 amendments, you no longer need to volunteer information not asked for (for consumer insurance contracts). If the duty is breached, TAL may void the policy (treat it as if it never existed), change the policy terms, or reduce/decline a claim.",
+
+      "reinstatement": "If a policy lapses (cancelled for non-payment), it may be possible to reinstate it. After reinstatement, the 13-month suicide exclusion recommences from the reinstatement date. Reinstatement generally requires satisfying TAL's underwriting requirements at that time.",
+
+      "unique_features": [
+        {
+          "feature": "Terminal Illness: Palliative Care Pathway",
+          "description": "TAL pays the Terminal Illness Benefit if the customer requires palliative care — even if life expectancy is not less than 12 months. This is an ADDITIONAL trigger to the standard 12-month life expectancy test.",
+          "customer_angle": "Genuinely good — provides a second pathway to early payment that most customers (and advisers) overlook. However, in practice, patients requiring palliative care typically have <12 months to live anyway."
+        },
+        {
+          "feature": "TPD Support Option (for TPD, not life cover)",
+          "description": "For mental health conditions, fatigue disorders, and similar conditions, TAL pays TPD benefits in staged payments (20% at a time) rather than a single lump sum — designed to prevent financial harm from receiving a large lump sum during mental illness.",
+          "customer_angle": "Mixed. Staged payments are intended to protect vulnerable customers but mean some customers with legitimate total disability don't receive the full benefit upfront. Applies only to TPD, not life cover."
+        }
+      ],
+
+      "potentially_tricky_clauses": [
+        {
+          "clause": "Advanced Payment Benefit — Accident-only restriction in first 3 years",
+          "exact_wording": "In the first three years from the Plan start date, the Advanced Payment Benefit will only be paid if the Life Insured's death resulted from an Accident. After the first three years, the Advanced Payment Benefit will apply for all causes of death unless the cause of death is excluded.",
+          "why_tricky": "The PDS advertises 'Immediate payment of $25,000 on death' in the at-a-glance section without prominently noting the 3-year restriction. A customer who dies from illness in the first 3 years (e.g. cancer diagnosed after policy start) cannot access the advance. The full benefit is still paid, but the $25,000 advance is not available — which is the benefit designed to cover immediate funeral costs."
+        },
+        {
+          "clause": "Terminal Illness definition — 12 months vs industry standard 24 months",
+          "exact_wording": "The Life Insured has an incurable Sickness or Injury and: has a life expectancy of less than 12 months; or requires palliative care.",
+          "why_tricky": "TAL uses a 12-month threshold. AIA and Zurich use a 24-month threshold. A customer with a terminal diagnosis and 18 months to live can access their benefit early with AIA or Zurich — but NOT with TAL (unless on palliative care). Customers comparing policies may not realise this difference exists, as all three call it a 'Terminal Illness Benefit'. The palliative care pathway partially compensates but is a different clinical concept."
+        },
+        {
+          "clause": "Long Distance Accommodation Benefit — 14 day limit",
+          "exact_wording": "Reimburses up to $250 per day, up to 14 days.",
+          "why_tricky": "AIA provides the same accommodation benefit for up to 30 days. For a terminally ill patient in hospital far from home, 14 days may be insufficient for family to travel and stay. The $250/day rate is the same, so the total maximum ($3,500 vs AIA's $7,500) is materially different."
+        }
+      ]
+    }
+  },
+
+  "AIA": {
+    "insurer": "AIA",
+    "product_name": "Priority Protection",
+    "pds_version": "9 November 2025",
+    "_meta": {
+      "insurer": "AIA",
+      "product": "Priority Protection",
+      "pds_version": "9 November 2025",
+      "pdf_file": "AIA_Priority_Protection_PDS_Nov2025.pdf",
+      "extracted_on": "2026-04-11",
+      "tool": "PDSCompareTool v1 — manually extracted from PDS"
+    },
+    "life_cover": {
+      "what_triggers_payment": "If you pass away, AIA will pay a lump sum equal to the Life Cover Sum Insured. If you are diagnosed with a Terminal Illness, AIA will pay a lump sum equal to the Life Cover Sum Insured in advance.",
+
+      "terminal_illness": {
+        "definition": "Terminal Illness means the diagnosis of an illness which, in the reasonable opinion of an appropriate specialist Medical Practitioner, is likely to result in you passing away within 24 months of the diagnosis.",
+        "advance_payment": "Yes — the full Life Cover Sum Insured is paid in advance on Terminal Illness diagnosis.",
+        "reduces_death_benefit": "Yes — payment of the Terminal Illness benefit reduces the Life Cover Sum Insured to nil and cover ends."
+      },
+
+      "suicide_exclusion": {
+        "period": "13 months",
+        "applies_from": "From the date this benefit commences, is reinstated, or increased (but only in relation to the increased amount).",
+        "exact_wording": "A benefit is not payable for Life Cover in the event of death from suicide within 13 months after this benefit commences, is reinstated, or increased (but only in relation to the increased amount) as shown on your Policy Schedule.",
+        "waiver": "The exclusion is waived if the Policy is replacing life cover from AIA or a previous insurer and the full suicide exclusion period under the policy being replaced has elapsed. The waiver only applies to the amount of life cover that has been replaced."
+      },
+
+      "key_exclusions": [
+        "Death from suicide within 13 months of commencement, reinstatement, or increase",
+        "The Life Cover Sum Insured is reduced by claims paid under linked benefits: Death/Terminal Illness, Final Expenses, TPD (Linked), Accidental TPD, Universal TPD, Partial and Permanent Disablement, Loss of Independence, Day 1 TPD, Crisis Events, Partial Payments (Crisis Recovery), Crisis Extension Events. Note: Sum Insured is NOT reduced if TPD/CI is held as Stand Alone.",
+        "Policy lapse or cancellation ends cover",
+        "Fraudulent claims"
+      ],
+
+      "built_in_benefits": [
+        {
+          "name": "Final Expenses",
+          "description": "Advances 10% of the Sum Insured up to a maximum of $25,000 to assist with immediate financial expenses while AIA assesses the full death claim.",
+          "any_catch": "Paid while claim is being assessed — not a separate benefit, it's an advance against the death claim. Reduces the Sum Insured by the amount paid."
+        },
+        {
+          "name": "Complimentary Family Final Expenses",
+          "description": "Pays the lower of $20,000 or 10% of the highest Life Cover Sum Insured if your Child (aged 2–17) passes away or is diagnosed with a Terminal Illness. Does not reduce the Life Cover Sum Insured.",
+          "any_catch": "Only one payment per Child. Maximum $200,000 across all Children. Benefit Indexation does not apply to this benefit. If a payment is made under Complimentary Family Final Expenses, no separate payment can be made under Crisis Recovery Complimentary Family Protection for the same child."
+        },
+        {
+          "name": "Benefit Indexation",
+          "description": "Automatically increases the Sum Insured at each Policy Anniversary by the higher of the CPI Increase and 5%, adjusting premium accordingly.",
+          "any_catch": "Applied automatically unless the customer opts out on the application form or contacts AIA before any Policy Anniversary. Easy to miss the opt-out window."
+        },
+        {
+          "name": "Guaranteed Future Insurability",
+          "description": "Allows the customer to increase the Sum Insured for significant Personal or Business Events before age 55, without providing further evidence of health or insurability.",
+          "any_catch": "Only available before age 55 (TAL has no stated age limit for this feature)."
+        },
+        {
+          "name": "Financial Planning Reimbursement",
+          "description": "Pays up to $5,000 to reimburse financial planning advice obtained within 12 months of a claim payment across all AIA policies. Maximum total $5,000 per Life Insured across all policies with AIA.",
+          "any_catch": "The $5,000 cap is across ALL policies the customer holds with AIA, not per policy. A customer with multiple AIA policies still only gets $5,000 total."
+        },
+        {
+          "name": "Accommodation Benefit",
+          "description": "Where AIA pays the Death or Terminal Illness Sum Insured, reimburses accommodation costs for Immediate Family Members who travel 100+ km to be with the Life Insured (who must be bed-confined 100+ km from home). Up to $250 per day for up to 30 days.",
+          "any_catch": "Maximum $7,500 lifetime per Life Insured across all AIA policies. Not payable if also claiming Home Care Benefit under Income Protection. Not available if cover is solely in superannuation."
+        },
+        {
+          "name": "Counselling Benefit",
+          "description": "Where AIA pays the Death or Terminal Illness Sum Insured, pays $200 per counselling session for the Life Insured and/or Immediate Family Member, up to a maximum total of $1,200 per Life Insured.",
+          "any_catch": "Applies only after a Death or Terminal Illness claim. $1,200 total cap."
+        },
+        {
+          "name": "Premium and Cover Pause Benefit",
+          "description": "For eligible policies, and subject to AIA's acceptance of an application, allows the customer to pause both premiums and cover for a period of 3, 6 or 12 months in certain circumstances (e.g. financial hardship, parental leave).",
+          "any_catch": "Cover is paused — no claims can be made during the pause period. Subject to AIA's acceptance (not automatic). Check policy schedule for eligibility."
+        },
+        {
+          "name": "Complimentary Interim Accidental Death Cover",
+          "description": "Pays a lump sum in the event of Accidental Death while AIA is assessing the application. Cover applies for up to 90 days from the date of the signed application.",
+          "any_catch": "Accidental death only — not all causes. Expires in 90 days regardless of application status."
+        }
+      ],
+
+      "optional_add_ons": [
+        {
+          "name": "TPD (Total and Permanent Disablement) — various definitions",
+          "description": "Pays a lump sum if the Life Insured becomes totally and permanently disabled. Available as Any Occupation, Own Occupation, or Universal TPD definitions.",
+          "extra_cost": "yes"
+        },
+        {
+          "name": "Crisis Recovery (Trauma)",
+          "description": "Pays a lump sum on diagnosis of specified critical illness events.",
+          "extra_cost": "yes"
+        },
+        {
+          "name": "Accidental Death",
+          "description": "Pays an additional lump sum if death is caused by an accident.",
+          "extra_cost": "yes"
+        },
+        {
+          "name": "Term Cover",
+          "description": "Pays a lump sum if you pass away or are diagnosed with Terminal Illness. Cover is limited to a five or 10-year period (renewable).",
+          "extra_cost": "Separate product — not an add-on to Life Cover"
+        }
+      ],
+
+      "policy_expiry": {
+        "expiry_age": "Policy anniversary prior to the 100th birthday (Ordinary Plan outside superannuation). Policy anniversary prior to the 75th birthday (if owned by the trustee of AIA Insurance Superannuation Scheme No.2 or an SMSF/approved superannuation fund).",
+        "any_conditions": "Entry ages: minimum 10 years (Variable Age-Stepped, Ordinary Plan), minimum 15 years (Superannuation Plan), maximum 74 years (Ordinary Plan), maximum 73 years (Superannuation Plan)."
+      },
+
+      "sum_insured": {
+        "minimum": "No minimum stated",
+        "maximum": "No limit for most occupations. Home Duties occupation: $2 million maximum.",
+        "indexation": "Automatic annual indexation by higher of CPI and 5%. Customer can opt out on application form or before any Policy Anniversary."
+      },
+
+      "waiting_periods": "No waiting periods other than the 13-month suicide exclusion. 6-month elimination period applies to health events cover (for Trauma/CI Rider benefits — not life cover).",
+
+      "duty_of_disclosure": "When applying for, reinstating, or varying the Policy, the customer must take reasonable care not to make a misrepresentation. AIA will ask questions — answer honestly based on what you know. If the duty is not met, AIA may void the policy, change its terms, or decline/reduce a claim. AIA refers to this as the 'Duty to Take Reasonable Care'.",
+
+      "reinstatement": "Not fully detailed in sections read — standard industry terms would apply. The 13-month suicide exclusion recommences from the reinstatement date.",
+
+      "unique_features": [
+        {
+          "feature": "Terminal Illness Definition — 24 months",
+          "description": "AIA pays the Terminal Illness Benefit if a specialist considers death likely within 24 months of diagnosis. This is twice the 12-month threshold used by TAL.",
+          "customer_angle": "Genuinely better for customers — you can access your benefit 12 months earlier under AIA's definition than under TAL's (for a given diagnosis). A customer with 18 months to live can claim on AIA but not on TAL (unless TAL's palliative care pathway applies)."
+        },
+        {
+          "feature": "Counselling Benefit",
+          "description": "AIA pays $200 per session, up to $1,200, for the Life Insured or Immediate Family Member to attend counselling after a Death or Terminal Illness claim.",
+          "customer_angle": "Genuinely useful — TAL doesn't have an equivalent counselling benefit separately itemised. Small dollar amount but acknowledges the emotional impact of claims."
+        },
+        {
+          "feature": "Complimentary Family Final Expenses",
+          "description": "Pays up to $20,000 if a child aged 2–17 dies or is diagnosed with Terminal Illness. Does not reduce the main Life Cover Sum Insured.",
+          "customer_angle": "Genuinely good — most customers don't consider the practical costs when a child passes. Does not cost extra."
+        }
+      ],
+
+      "potentially_tricky_clauses": [
+        {
+          "clause": "Life Cover Sum Insured Reductions from linked benefit payments",
+          "exact_wording": "The Life Cover Sum Insured will be reduced by the amount of any claim paid on the following Built-in or Rider Benefits (including any Linked Benefits attached to the Superannuation Life Cover Plan): Death or Terminal Illness, Final Expenses, TPD, Accidental TPD, Universal TPD, Partial and Permanent Disablement, Loss of Independence, Day 1 TPD, Crisis Events, Partial Payments (Crisis Recovery), Crisis Extension Events.",
+          "why_tricky": "A customer who purchases Life Cover AND TPD Cover linked together may not realise that a TPD payment reduces their remaining Life Cover. For example: $1 million Life Cover with $500,000 TPD linked. If TPD pays $500,000 after an accident, the remaining Life Cover is also $500,000 — half of what the customer thought they had for their family. This is clearly stated in the PDS but easy to miss if only reading the benefits section."
+        },
+        {
+          "clause": "Guaranteed Future Insurability — age 55 cutoff",
+          "exact_wording": "Allows you to increase your Sum Insured for significant Personal or Business Events before age 55, without providing further evidence of your health or insurability.",
+          "why_tricky": "The benefit is listed prominently as a feature, but the age 55 cutoff means customers who buy the policy in their 40s lose access to it relatively quickly. TAL's equivalent benefit does not have a comparable age restriction listed."
+        }
+      ]
+    }
+  },
+
+  "Zurich": {
+    "insurer": "Zurich",
+    "product_name": "Active",
+    "pds_version": "1 November 2025",
+    "_meta": {
+      "insurer": "Zurich",
+      "product": "Active",
+      "pds_version": "1 November 2025",
+      "pdf_file": "Zurich_Active_PDS_Nov2025.pdf",
+      "extracted_on": "2026-04-11",
+      "tool": "PDSCompareTool v1 — manually extracted from PDS"
+    },
+    "life_cover": {
+      "what_triggers_payment": "The Death & Terminal Illness benefit pays a lump sum equal to 100% of the maximum amount payable (initial amount of cover) on death or terminal illness diagnosis. The policy also covers health events (heart attack, stroke, cancer, and many others) which pay a separate lump sum based on severity category — but these reduce the cover available for future claims.",
+
+      "terminal_illness": {
+        "definition": "Terminal illness means any condition caused by sickness or injury, where despite all reasonable medical treatment, the life insured is expected to live for no more than 24 months. Must be confirmed and certified by both: (1) a medical practitioner treating the condition, and (2) if required by Zurich, a specialist medical practitioner who is an expert in the condition. For superannuation-held cover, two certifications are always required and neither certified life expectancy period must have ended.",
+        "advance_payment": "Yes — the full amount of cover (maximum amount payable for death & terminal illness) is paid in advance on terminal illness diagnosis.",
+        "reduces_death_benefit": "Yes — if the death & terminal illness benefit is paid (for terminal illness or death), 100% of the maximum amount payable is paid and the policy ends."
+      },
+
+      "suicide_exclusion": {
+        "period": "13 months",
+        "applies_from": "From the death benefit start date; from the start date of any death benefit increase applied for (for the increase only); from the most recent policy reinstatement.",
+        "exact_wording": "We won't pay the death benefit for death caused by suicide within 13 months of the: death benefit start date; start date of any death benefit increase applied for (but only for the increase); most recent policy reinstatement.",
+        "waiver": "The exclusion is waived if, immediately before the death benefit started, the life insured held death cover for at least 13 consecutive months with Zurich or another insurer and Zurich replaced it. The waiver only applies to the amount of death cover replaced."
+      },
+
+      "key_exclusions": [
+        "Death from suicide within 13 months of death benefit start date, increase, or reinstatement",
+        "Health events cover: no benefit if the health event is caused directly or indirectly by an intentional self-inflicted act",
+        "Elective and donor transplant surgery is not covered in the first 6 months of health events cover",
+        "Any event or condition specifically listed as an exclusion on the policy schedule (individual underwriting exclusions)",
+        "Death & terminal illness cover may reduce to nil if health event claims are paid and the customer has not selected the Additional Death Cover optional benefit — the claim protector (25% of cover) does NOT protect death & terminal illness cover"
+      ],
+
+      "built_in_benefits": [
+        {
+          "name": "Advancement for Funeral Expenses",
+          "description": "Advances up to $15,000 of the death benefit amount to reimburse funeral expenses.",
+          "any_catch": "Maximum is $15,000 — lower than TAL ($25,000) and AIA ($25,000). Cannot be held in superannuation."
+        },
+        {
+          "name": "Inflation Protection",
+          "description": "Cover is increased each year automatically by the higher of 5% or CPI, without health assessment. Applies to initial amount of cover, maximum amount payable, death & terminal illness cover, and the claim protector amount.",
+          "any_catch": "Inflation protection increases are offered until the policy anniversary when the life insured is 64 — after which cover no longer automatically inflates. Applied automatically unless the customer opts out."
+        },
+        {
+          "name": "Claim Protector",
+          "description": "Protects 25% of the initial amount of cover for future health event claims. After a health event claim, if the maximum benefit category amount falls below 25% of initial cover, it is topped back up to 25%.",
+          "any_catch": "The claim protector applies to HEALTH EVENT claims only. It does NOT protect the death & terminal illness benefit. This means that after multiple health event claims, the death & terminal illness benefit may reduce to nil (unless Additional Death Cover optional benefit is selected). This is a significant structural difference from TAL and AIA where death cover is separate from trauma/TPD."
+        },
+        {
+          "name": "Future Insurability",
+          "description": "Allows the customer to increase cover without health assessment when certain life events happen: marriage/partnership, divorce, becoming a parent, significant salary increase (15%+), new or increased mortgage, new investment property loan, becoming a full-time carer, becoming a widow/widower, child starting secondary school, or child turning 18.",
+          "any_catch": "In the first 6 months after an increase under this feature, the extra benefit amount only applies to events caused by accidental death or accidental injury. Sum of all increases under this feature cannot exceed $1 million over the life of the policy. Initial amount of cover cannot exceed $4 million."
+        },
+        {
+          "name": "Financial Planning Advice Reimbursement",
+          "description": "Reimburses up to $1,000 towards financial planning advice required as a result of a full benefit payment for terminal illness, death, or a category A or B health event.",
+          "any_catch": "Maximum is $1,000 — significantly lower than TAL and AIA which both pay up to $5,000. Also, this benefit does not apply if the policy is issued to the trustee of a superannuation fund."
+        },
+        {
+          "name": "Cover Suspension",
+          "description": "Allows the customer to put cover on hold for a chosen period (3, 6 or 12 months) to ease financial pressure. No premiums charged, no claims accepted during suspension. Up to 12 months total can be taken over the life of the policy.",
+          "any_catch": "No claims can be made during the suspension period. When cover restarts, the elimination period (for health events) recommences from the reinstatement date."
+        },
+        {
+          "name": "Guaranteed Upgrade of Benefits",
+          "description": "If Zurich improves policy terms without changing standard premium rates, the improvements are automatically incorporated into existing policies (for future claims only).",
+          "any_catch": "Improvements apply to future claims only, not past or current claims. Does not apply to claims for conditions that first occurred or were first diagnosed before the improvement effective date."
+        }
+      ],
+
+      "optional_add_ons": [
+        {
+          "name": "Extended Care Option",
+          "description": "Boosts the health events benefit payable by 50% if the life insured suffers a category A health event which meets extra severity criteria (must be severely disabled before policy anniversary at age 65).",
+          "extra_cost": "yes"
+        },
+        {
+          "name": "Additional Death Cover Option",
+          "description": "Pays an extra lump sum on death or terminal illness. This amount is separate from the main cover and is NOT affected by health event claims. This is the recommended option for customers who want to ensure their death benefit stays intact even after health event claims.",
+          "extra_cost": "yes"
+        }
+      ],
+
+      "policy_expiry": {
+        "expiry_age": "Death & terminal illness cover: policy anniversary when life insured is 99. Health events cover: policy anniversary when life insured is 70. Safety-net ends at 70. Occupational impairment cover ends at 65.",
+        "any_conditions": "After health events cover ends at 70, the policy continues with death & terminal illness cover only. Entry ages: 15–65."
+      },
+
+      "sum_insured": {
+        "minimum": "$100,000",
+        "maximum": "$4 million (initial amount of cover for health events, death & terminal illness)",
+        "indexation": "Automatic annual indexation by higher of 5% or CPI. Offered until policy anniversary at age 64. Applies by default unless customer opts out."
+      },
+
+      "waiting_periods": "No waiting period for death cover other than suicide exclusion. Health events cover has a 90-day elimination period for certain conditions (not applicable to death). Elective/donor transplant surgery not covered in first 6 months of health events cover.",
+
+      "duty_of_disclosure": "When applying for Zurich Active policies, the customer must take reasonable care not to make a misrepresentation. This duty applies at application, when making changes to the policy, and when reinstating cover. If breached, Zurich may void the policy, change its terms, or decline/reduce a claim.",
+
+      "reinstatement": "When there is a break in cover and the policy restarts, the elimination period for health events starts from the reinstatement date. The suicide exclusion recommences from the reinstatement date. For cover suspension (not lapse), the elimination period starts from the cover suspension end date.",
+
+      "unique_features": [
+        {
+          "feature": "Multiple Claims — Health Events (up to policy limits)",
+          "description": "Unlike traditional trauma policies, Zurich Active Cover allows multiple claims for different health events over the life of the policy. Each claim reduces the maximum available for future claims (via the benefit category system). The claim protector ensures 25% of initial cover is always available for further health event claims.",
+          "customer_angle": "Genuinely innovative and customer-friendly for health events. However, customers must understand this is fundamentally a different product structure to TAL and AIA — death cover and health events share the same initial amount of cover, so multiple health event claims can erode the death benefit unless Additional Death Cover is separately purchased."
+        },
+        {
+          "feature": "Safety-Net for Severe Conditions",
+          "description": "If the life insured suffers a severe condition that isn't specifically listed in Zurich's health events tables, the safety-net criteria may still allow a claim based on overall inability to perform an occupation or daily tasks.",
+          "customer_angle": "Customer-friendly — provides a catch-all for conditions Zurich hasn't specifically defined. Ends at age 70."
+        },
+        {
+          "feature": "Cover Suspension Feature",
+          "description": "Customers can formally suspend their cover (and premiums) for up to 12 months total over the life of the policy — without cancelling the policy.",
+          "customer_angle": "Useful for financial hardship situations. TAL and AIA have similar features (AIA's Premium and Cover Pause Benefit), but Zurich's version is built in. Note: no claims during suspension."
+        },
+        {
+          "feature": "Terminal Illness Definition — 24 months",
+          "description": "Same as AIA — pays the benefit if death is expected within 24 months of diagnosis.",
+          "customer_angle": "More generous than TAL's 12-month threshold."
+        }
+      ],
+
+      "potentially_tricky_clauses": [
+        {
+          "clause": "Death Cover Can Reduce to Nil After Health Event Claims",
+          "exact_wording": "The claim protector doesn't apply to death or terminal illness cover, which means death & terminal illness cover may reduce to nil unless additional death cover is included.",
+          "why_tricky": "A customer who buys Zurich Active Cover primarily to protect their family in case of death may not realise that multiple health event claims can reduce their death benefit to zero. For example: $1 million initial cover → three health event claims → death benefit eroded. The claim protector only protects 25% of cover for HEALTH EVENTS, not for the death benefit. Without the optional Additional Death Cover benefit, the death benefit can disappear. This is the most significant structural difference in how Zurich Active works vs. traditional life insurance."
+        },
+        {
+          "clause": "Financial Planning Reimbursement — $1,000 vs $5,000 at competitors",
+          "exact_wording": "We'll reimburse up to $1,000 towards the cost of financial planning advice required as a result of a full benefit payment for terminal illness, death or a category A or B health event under this policy.",
+          "why_tricky": "TAL and AIA both reimburse up to $5,000. Zurich's $1,000 limit is 20% of the benefit offered by the other two insurers. A customer comparing benefit summaries might assume the financial planning reimbursement is broadly equivalent across all three — it isn't."
+        },
+        {
+          "clause": "Funeral Expenses Advancement — $15,000 vs $25,000 at competitors",
+          "exact_wording": "Advances up to $15,000 of the death benefit amount to reimburse funeral expenses.",
+          "why_tricky": "TAL and AIA both advance up to $25,000. Zurich's $15,000 represents a $10,000 shortfall for immediate family expenses at the time of death. With average Australian funerals costing $7,000–$15,000+, this difference matters practically."
+        },
+        {
+          "clause": "Inflation Protection Stops at Age 64",
+          "exact_wording": "Increases are offered each year on the policy anniversary until the policy anniversary when the life insured is 64.",
+          "why_tricky": "A customer who buys the policy and accepts automatic indexation every year will eventually find their cover stops inflating from age 64 onward. TAL and AIA do not have a stated age cutoff for their inflation protection benefits. Over time, the real value of Zurich's cover will erode from age 64 in a way that the other two policies do not."
+        }
+      ]
+    }
+  }
+}

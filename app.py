@@ -483,8 +483,9 @@ def main():
                     "When you make a claim, all three insurers will review your complete "
                     "medical records — GP notes, Medicare records, pharmacy history. "
                     "If anything relates to your claim and was not disclosed at application, "
-                    "they can reduce or decline the claim. This catches many honest customers "
-                    "who forgot an old GP visit or didn't think a symptom was relevant. "
+                    "they can reduce or decline the claim. This applies even when non-disclosure "
+                    "was unintentional — for example, forgetting an older GP consultation or "
+                    "not considering a historical symptom relevant. "
                     "Before applying, obtain a summary of your medical records from your GP "
                     "and disclose anything you are unsure about.")
                 add(["TAL"], "yellow",
@@ -517,8 +518,8 @@ def main():
                     "Health event claims erode your death benefit — no protection for death cover",
                     "Zurich Active combines health events and death cover in one shared pool. "
                     "Every health event claim (heart attack, cancer, stroke) reduces the maximum "
-                    "death benefit available. The 'claim protector' sounds reassuring but it only "
-                    "protects future health event claims — not the death benefit. "
+                    "death benefit available. The 'claim protector' only protects future health "
+                    "event claims — not the death benefit. "
                     "Without the optional Additional Death Cover, your family could receive "
                     "significantly less than you intended when you die.")
 

@@ -1,5 +1,7 @@
 # Know Your Life Cover
 
+[![Live App](https://img.shields.io/badge/Live%20App-know--your--life--cover.streamlit.app-brightgreen?style=for-the-badge)](https://know-your-life-cover.streamlit.app)
+
 A Streamlit dashboard that compares the life cover sections of three Australian life insurance Product Disclosure Statements (PDS) — TAL Accelerated Protection, AIA Priority Protection, and Zurich Active.
 
 Built to help customers understand what they are buying before they sit down with a financial adviser.

@@ -949,7 +949,8 @@ def main():
                 st.markdown(f"### {ins}")
                 for item in tricky:
                     if isinstance(item, dict):
-                        with st.expander(f"⚠️ {item.get('clause', 'Clause')}"):
+                        clause_label = item.get('clause', 'Clause').replace('$', '\\$')
+                        with st.expander(f"⚠️ {clause_label}"):
                             if item.get("exact_wording"):
                                 st.markdown("**PDS wording:**")
                                 st.markdown(

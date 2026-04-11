@@ -10,7 +10,6 @@ Usage:
 
 import json
 import streamlit as st
-import pandas as pd
 from pathlib import Path
 from datetime import date
 
@@ -27,16 +26,6 @@ DATA_FILE = FOLDER / "pds_data.json"
 
 INSURERS = ["TAL", "AIA", "Zurich"]
 INSURER_COLORS = {"TAL": "#003057", "AIA": "#E4002B", "Zurich": "#0066CC"}
-
-# ── Load data ──────────────────────────────────────────────────────────────────
-
-@st.cache_data
-def load_data():
-    if not DATA_FILE.exists():
-        return None
-    with open(DATA_FILE, encoding="utf-8") as f:
-        return json.load(f)
-
 
 # ── Know Your Rights content (hardcoded from LICOP March 2025 + other sources) ─
 
@@ -96,10 +85,100 @@ KNOW_YOUR_RIGHTS = {
     },
 }
 
+# ── Feature-aligned benefit rows for the Side-by-Side Compare tab ─────────────
+# Each entry: (category label, {insurer: benefit_name_in_json})
+# None means the feature is not included for that insurer.
+
+BENEFIT_ROWS = [
+    ("Funeral / immediate advance", {
+        "TAL":    "Advanced Payment Benefit",
+        "AIA":    "Final Expenses",
+        "Zurich": "Advancement for Funeral Expenses",
+    }),
+    ("Inflation protection", {
+        "TAL":    "Inflation Protection Benefit",
+        "AIA":    "Benefit Indexation",
+        "Zurich": "Inflation Protection",
+    }),
+    ("Increase cover without health assessment", {
+        "TAL":    "Guaranteed Future Insurability Benefit",
+        "AIA":    "Guaranteed Future Insurability",
+        "Zurich": "Future Insurability",
+    }),
+    ("Financial planning reimbursement after claim", {
+        "TAL":    "Financial Planning Benefit",
+        "AIA":    "Financial Planning Reimbursement",
+        "Zurich": "Financial Planning Advice Reimbursement",
+    }),
+    ("Family accommodation support", {
+        "TAL":    "Long Distance Accommodation Benefit",
+        "AIA":    "Accommodation Benefit",
+        "Zurich": None,
+    }),
+    ("Grief / counselling support", {
+        "TAL":    "Grief Support Benefit",
+        "AIA":    "Counselling Benefit",
+        "Zurich": None,
+    }),
+    ("Pause premiums / cover suspension", {
+        "TAL":    None,
+        "AIA":    "Premium and Cover Pause Benefit",
+        "Zurich": "Cover Suspension",
+    }),
+    ("Child death benefit", {
+        "TAL":    None,
+        "AIA":    "Complimentary Family Final Expenses",
+        "Zurich": None,
+    }),
+    ("Interim accidental death cover (application period)", {
+        "TAL":    None,
+        "AIA":    "Complimentary Interim Accidental Death Cover",
+        "Zurich": None,
+    }),
+    ("Claim protector (health events pool)", {
+        "TAL":    None,
+        "AIA":    None,
+        "Zurich": "Claim Protector",
+    }),
+    ("Guaranteed policy upgrade", {
+        "TAL":    None,
+        "AIA":    None,
+        "Zurich": "Guaranteed Upgrade of Benefits",
+    }),
+    ("Premium freeze (fix premium, benefit reduces)", {
+        "TAL":    "Premium Freeze Benefit",
+        "AIA":    None,
+        "Zurich": None,
+    }),
+    ("Repatriation benefit (death overseas)", {
+        "TAL":    "Repatriation Benefit",
+        "AIA":    None,
+        "Zurich": None,
+    }),
+]
+
+# ── Flag display constants for the My Situation rule engine ───────────────────
+
+FLAG_ICON   = {"red": "🔴", "green": "🟢", "yellow": "🟡"}
+FLAG_BG     = {"red": "#fff5f5", "green": "#f0fff4", "yellow": "#fffbf0"}
+FLAG_BORDER = {"red": "#e53e3e", "green": "#38a169", "yellow": "#d69e2e"}
+
+# Shared caption style used across Overview panels
+WARN_STYLE = "font-size:0.85em;color:#555;margin-top:6px;"
+
+# ── Data loading ───────────────────────────────────────────────────────────────
+
+@st.cache_data
+def load_data():
+    if not DATA_FILE.exists():
+        return None
+    with open(DATA_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
 def safe_get(data: dict, *keys, default="Not stated"):
-    """Safely traverse nested dict."""
+    """Safely traverse a nested dict, returning default if any key is missing."""
     val = data
     for k in keys:
         if isinstance(val, dict):
@@ -111,14 +190,81 @@ def safe_get(data: dict, *keys, default="Not stated"):
     return val if val not in (None, "", [], {}) else default
 
 
-def lc(data: dict, insurer: str):
-    """Return life_cover sub-dict for an insurer."""
+def lc(data: dict, insurer: str) -> dict:
+    """Return the life_cover sub-dict for an insurer."""
     return data.get(insurer, {}).get("life_cover", {})
 
 
 def badge(insurer: str) -> str:
+    """Return an HTML colour badge for an insurer name."""
     color = INSURER_COLORS.get(insurer, "#666")
-    return f'<span style="background:{color};color:white;padding:2px 10px;border-radius:4px;font-weight:bold;">{insurer}</span>'
+    return (
+        f'<span style="background:{color};color:white;padding:2px 10px;'
+        f'border-radius:4px;font-weight:bold;">{insurer}</span>'
+    )
+
+
+def metric_box(color: str, value: str, unit: str, label: str) -> str:
+    """Return an HTML coloured metric box with consistent height and font sizes."""
+    return (
+        f"<div style='text-align:center;background:{color};color:white;"
+        f"border-radius:8px;padding:14px 4px;min-height:90px;"
+        f"display:flex;flex-direction:column;justify-content:center;'>"
+        f"<div style='font-size:1.9em;font-weight:bold;line-height:1.1;'>{value}</div>"
+        f"<div style='font-size:0.82em;margin-top:2px;'>{unit}</div>"
+        f"<div style='font-size:0.78em;margin-top:8px;font-weight:bold;'>{label}</div>"
+        f"</div>"
+    )
+
+
+def benefit_lookup(data: dict, insurer: str) -> dict:
+    """Return a name-keyed dict of built-in benefit records for an insurer."""
+    benefits = lc(data, insurer).get("built_in_benefits", [])
+    return {b["name"]: b for b in benefits if isinstance(b, dict)}
+
+
+def cell_html(lookups: dict, insurer: str, benefit_name: str, bg: str) -> str:
+    """Return an HTML table cell for a benefit row in the Built-in Benefits table."""
+    if benefit_name is None:
+        return (
+            f"<td style='padding:10px 12px;vertical-align:top;background:{bg};"
+            f"border-bottom:1px solid #e5e5e5;font-size:0.85em;color:#aaa;'>"
+            f"Not included</td>"
+        )
+    b = lookups[insurer].get(benefit_name)
+    if not b:
+        return (
+            f"<td style='padding:10px 12px;vertical-align:top;background:{bg};"
+            f"border-bottom:1px solid #e5e5e5;font-size:0.85em;color:#aaa;'>"
+            f"Not included</td>"
+        )
+    name  = b.get("name", "—")
+    desc  = b.get("description", "")
+    catch = b.get("any_catch", "")
+    has_catch = catch and catch.lower() not in ("none", "n/a", "not stated", "")
+    catch_block = (
+        f"<div style='font-size:0.82em;color:#b85c00;background:#fff3e0;"
+        f"border-left:3px solid #f0a500;padding:3px 7px;margin-top:5px;'>"
+        f"⚠️ {catch}</div>"
+    ) if has_catch else ""
+    return (
+        f"<td style='padding:10px 12px;vertical-align:top;background:{bg};"
+        f"border-bottom:1px solid #e5e5e5;'>"
+        f"<div style='font-size:0.88em;font-weight:600;margin-bottom:3px;'>{name}</div>"
+        f"<div style='font-size:0.84em;color:#444;line-height:1.45;'>{desc}</div>"
+        f"{catch_block}"
+        f"</td>"
+    )
+
+
+def insurer_header_div(insurer: str) -> str:
+    """Return a coloured insurer header div for use above content sections."""
+    color = INSURER_COLORS.get(insurer, "#666")
+    return (
+        f"<div style='background:{color};color:white;padding:5px 14px;"
+        f"border-radius:4px;font-weight:bold;font-size:1em;"
+        f"margin-bottom:10px;display:inline-block;'>{insurer}</div>"
+    )
 
 
 # ── Main app ───────────────────────────────────────────────────────────────────
@@ -130,7 +276,6 @@ def main():
         "Life cover (death benefit) only. For information purposes only — always verify with the current PDS."
     )
 
-    # Load data
     data = load_data()
 
     if data is None:
@@ -140,7 +285,7 @@ def main():
         )
         st.stop()
 
-    # Check for extraction errors
+    # Warn if any insurer data failed to extract
     errors = [ins for ins in INSURERS if "error" in data.get(ins, {})]
     if errors:
         st.warning(f"Extraction errors for: {', '.join(errors)}. Some data may be missing.")
@@ -156,7 +301,7 @@ def main():
                 st.markdown(f"PDS version: {meta.get('pds_version', '—')}")
                 st.markdown(f"Extracted: {meta.get('extracted_on', '—')}")
 
-    # ── TABS ──────────────────────────────────────────────────────────────────
+    # ── Tabs ──────────────────────────────────────────────────────────────────
     tab_overview, tab_situation, tab_compare, tab_tricky, tab_rights, tab_disclaimer = st.tabs([
         "📖 Overview",
         "🙋 My Situation",
@@ -174,25 +319,10 @@ def main():
             "and some of those details matter a lot."
         )
 
-        # ── Key differences spotlight ──────────────────────────────────────────
         st.markdown("---")
         st.markdown("### Key differences at a glance")
 
         diff_col1, diff_col2, diff_col3 = st.columns(3)
-
-        # Shared box style — uniform height and font sizes across all three panels
-        def metric_box(color, value, unit, label):
-            return (
-                f"<div style='text-align:center;background:{color};color:white;"
-                f"border-radius:8px;padding:14px 4px;min-height:90px;"
-                f"display:flex;flex-direction:column;justify-content:center;'>"
-                f"<div style='font-size:1.9em;font-weight:bold;line-height:1.1;'>{value}</div>"
-                f"<div style='font-size:0.82em;margin-top:2px;'>{unit}</div>"
-                f"<div style='font-size:0.78em;margin-top:8px;font-weight:bold;'>{label}</div>"
-                f"</div>"
-            )
-
-        WARN_STYLE = "font-size:0.85em;color:#555;margin-top:6px;"
 
         with diff_col1:
             st.markdown("#### Terminal illness threshold")
@@ -206,7 +336,7 @@ def main():
             with c3:
                 st.markdown(metric_box("#0066CC", "24", "months", "Zurich"), unsafe_allow_html=True)
             st.markdown(
-                "<div style='" + WARN_STYLE + "'>"
+                f"<div style='{WARN_STYLE}'>"
                 "⚠️ If you're diagnosed with <strong>18 months to live</strong>, "
                 "AIA and Zurich pay your full benefit now. TAL does not — "
                 "you would need to wait until you have less than 12 months remaining "
@@ -226,7 +356,7 @@ def main():
             with c3:
                 st.markdown(metric_box("#0066CC", "$15k", "max advance", "Zurich"), unsafe_allow_html=True)
             st.markdown(
-                "<div style='" + WARN_STYLE + "'>"
+                f"<div style='{WARN_STYLE}'>"
                 "⚠️ Zurich advances <strong>$10,000 less</strong> than TAL and AIA at the time of death — "
                 "when families most need immediate cash for funeral and estate costs. "
                 "Also: TAL's advance is <strong>Accident-only in the first 3 years</strong>. "
@@ -246,14 +376,13 @@ def main():
             with c3:
                 st.markdown(metric_box("#0066CC", "✗", "not included", "Zurich"), unsafe_allow_html=True)
             st.markdown(
-                "<div style='" + WARN_STYLE + "'>"
+                f"<div style='{WARN_STYLE}'>"
                 "⚠️ TAL and AIA both pay $250/day when a family member has to travel and stay near you "
                 "in hospital. AIA covers more than twice as many days as TAL. "
                 "Zurich <strong>does not offer this benefit at all</strong>."
                 "</div>", unsafe_allow_html=True
             )
 
-        # ── The Zurich structural warning ──────────────────────────────────────
         st.markdown("---")
         st.info(
             "**Zurich Active — structural note:** "
@@ -263,17 +392,16 @@ def main():
             "See the **Watch Out For** tab for full details."
         )
 
-        # ── Per-insurer plain English summaries ───────────────────────────────
         st.markdown("---")
         st.markdown("### Policy summaries")
 
         for ins in INSURERS:
             ins_data = data.get(ins, {})
-            life = lc(data, ins)
-            meta = ins_data.get("_meta", {})
-            color = INSURER_COLORS.get(ins, "#666")
+            life     = lc(data, ins)
+            meta     = ins_data.get("_meta", {})
+            color    = INSURER_COLORS[ins]
 
-            st.markdown(f"---")
+            st.markdown("---")
             st.markdown(
                 f"<span style='background:{color};color:white;padding:3px 14px;"
                 f"border-radius:4px;font-weight:bold;font-size:1.1em;'>{ins}</span> "
@@ -282,19 +410,26 @@ def main():
             )
             st.markdown("")
 
-            col1, col2 = st.columns([1, 1])
+            col1, col2 = st.columns(2)
 
             with col1:
-                # Terminal illness — show just the threshold number prominently
-                ti = life.get("terminal_illness", {})
+                ti     = life.get("terminal_illness", {})
                 ti_def = ti.get("definition", "") if isinstance(ti, dict) else str(ti)
-                threshold = "12 months" if "12 months" in ti_def else "24 months" if "24 months" in ti_def else "—"
+                threshold = (
+                    "12 months" if "12 months" in ti_def
+                    else "24 months" if "24 months" in ti_def
+                    else "—"
+                )
                 st.markdown(f"**Terminal illness threshold:** {threshold}")
                 st.markdown(f"**Advance payment:** {ti.get('advance_payment', '—') if isinstance(ti, dict) else '—'}")
                 st.markdown("")
 
                 sui = life.get("suicide_exclusion", {})
-                st.markdown(f"**Suicide exclusion:** {sui.get('period', '—') if isinstance(sui, dict) else str(sui)} from policy start / reinstatement / increase date")
+                st.markdown(
+                    f"**Suicide exclusion:** "
+                    f"{sui.get('period', '—') if isinstance(sui, dict) else str(sui)} "
+                    f"from policy start / reinstatement / increase date"
+                )
                 st.markdown("")
 
                 expiry = life.get("policy_expiry", {})
@@ -303,7 +438,7 @@ def main():
             with col2:
                 st.markdown("**Key exclusions (beyond suicide):**")
                 exclusions = life.get("key_exclusions", [])
-                for ex in (exclusions[1:] if exclusions else []):  # skip suicide (already shown)
+                for ex in (exclusions[1:] if exclusions else []):
                     st.markdown(f"- {ex}")
 
                 si = life.get("sum_insured", {})
@@ -376,19 +511,16 @@ def main():
 
         if submitted:
             # ── Rule engine ───────────────────────────────────────────────────
-            # Each rule: insurer(s), flag type, title, detail, condition result
             # flag types: "red" = potential disadvantage, "green" = works in your favour,
             #             "yellow" = worth checking
-
-            a = age
             flags = {"TAL": [], "AIA": [], "Zurich": []}
 
             def add(insurers, ftype, title, detail):
                 for ins in insurers:
                     flags[ins].append((ftype, title, detail))
 
-            # ── Age-based rules ────────────────────────────────────────────────
-            if a >= 55:
+            # Age-based rules
+            if age >= 55:
                 add(["AIA"], "red",
                     "Guaranteed Future Insurability ends at age 55",
                     "You are at or past the age where AIA allows you to increase cover without "
@@ -396,7 +528,7 @@ def main():
                     "will require medical underwriting to increase your sum insured. "
                     "TAL and Zurich do not have a stated age cutoff for this feature.")
 
-            if a >= 60:
+            if age >= 60:
                 add(["Zurich"], "yellow",
                     "Inflation protection stops at age 64 — approaching soon",
                     "Zurich stops automatically increasing your cover at age 64. "
@@ -404,14 +536,14 @@ def main():
                     "entering the years when the probability of claiming is highest. "
                     "TAL and AIA do not have a comparable age cutoff.")
 
-            if a >= 64:
+            if age >= 64:
                 add(["Zurich"], "red",
                     "Inflation protection has already stopped",
                     "At your age, Zurich is no longer increasing your cover each year. "
                     "The real value of your cover is already eroding relative to inflation. "
                     "TAL and AIA do not impose this cutoff.")
 
-            if a >= 65:
+            if age >= 65:
                 add(["Zurich"], "red",
                     "Health events cover ends at age 70 — approaching",
                     "Zurich's health events cover (heart attack, cancer, stroke and others) "
@@ -419,7 +551,7 @@ def main():
                     "After that, only death and terminal illness cover remains. "
                     "Given your current age, this cutoff is within the next 5 years.")
 
-            # ── Terminal illness ───────────────────────────────────────────────
+            # Terminal illness
             if terminal_concern == "Yes":
                 add(["TAL"], "red",
                     "TAL's terminal illness threshold is 12 months — half of AIA and Zurich",
@@ -434,7 +566,7 @@ def main():
                     "you can access your full sum insured now — giving you time to plan your "
                     "finances and make decisions while you are still well enough to act.")
 
-            # ── Dependants + accommodation ─────────────────────────────────────
+            # Dependants + accommodation
             if has_dependants == "Yes" and far_from_hospital == "Yes":
                 add(["Zurich"], "red",
                     "No family accommodation benefit",
@@ -461,7 +593,7 @@ def main():
                     "reimbursement for your family's travel and accommodation. TAL covers "
                     "14 days and AIA covers 30 days at $250/day.")
 
-            # ── Children ──────────────────────────────────────────────────────
+            # Children
             if has_children == "Yes":
                 add(["AIA"], "green",
                     "Complimentary child death benefit — $20,000",
@@ -475,7 +607,7 @@ def main():
                     "death or terminal illness of a child aged 2–17. "
                     "AIA provides up to $20,000 at no extra cost.")
 
-            # ── Pre-existing conditions ────────────────────────────────────────
+            # Pre-existing conditions
             if pre_existing in ("Yes", "Prefer not to say"):
                 add(["TAL", "AIA", "Zurich"], "red",
                     "Non-disclosure risk — your medical history will be checked at claim time",
@@ -495,7 +627,7 @@ def main():
                     "carefully when it arrives — the exclusion may cover the exact condition "
                     "you were most concerned about.")
 
-            # ── TPD / linked cover ─────────────────────────────────────────────
+            # TPD / linked cover
             if tpd_plan == "Yes — linked to life cover":
                 add(["AIA"], "red",
                     "Linked TPD payments reduce your life cover sum insured",
@@ -522,7 +654,7 @@ def main():
                     "Without the optional Additional Death Cover, your family could receive "
                     "significantly less than you intended when you die.")
 
-            # ── Financial stress ───────────────────────────────────────────────
+            # Financial stress
             if financial_stress == "Yes":
                 add(["AIA"], "green",
                     "Premium and Cover Pause Benefit — pause up to 12 months",
@@ -546,7 +678,7 @@ def main():
                     "all three insurers. If you are experiencing mental health difficulties alongside "
                     "financial stress, this is particularly important to be aware of.")
 
-            # ── Replacing existing policy ──────────────────────────────────────
+            # Replacing existing policy
             if replacing_policy == "Yes":
                 add(["TAL", "AIA", "Zurich"], "green",
                     "Suicide exclusion waiver may apply",
@@ -556,7 +688,7 @@ def main():
                     "Make sure your adviser documents this properly — the waiver must be "
                     "applied at the time the new policy is issued.")
 
-            # ── Early years restriction (all customers) ────────────────────────
+            # Early years restriction — applies to all customers
             add(["TAL"], "yellow",
                 "The $25,000 advance is Accident-only in the first 3 years",
                 "TAL's Advanced Payment Benefit (the immediate $25,000 released on death) "
@@ -575,13 +707,9 @@ def main():
             )
             st.markdown("")
 
-            ICON = {"red": "🔴", "green": "🟢", "yellow": "🟡"}
-            BG   = {"red": "#fff5f5", "green": "#f0fff4", "yellow": "#fffbf0"}
-            BORDER = {"red": "#e53e3e", "green": "#38a169", "yellow": "#d69e2e"}
-
             res_cols = st.columns(3)
             for col, ins in zip(res_cols, INSURERS):
-                color = INSURER_COLORS.get(ins, "#666")
+                color = INSURER_COLORS[ins]
                 with col:
                     st.markdown(
                         f"<div style='background:{color};color:white;padding:7px 14px;"
@@ -599,11 +727,11 @@ def main():
                     else:
                         for ftype, title, detail in ins_flags:
                             st.markdown(
-                                f"<div style='background:{BG[ftype]};"
-                                f"border-left:4px solid {BORDER[ftype]};"
+                                f"<div style='background:{FLAG_BG[ftype]};"
+                                f"border-left:4px solid {FLAG_BORDER[ftype]};"
                                 f"padding:10px 12px;border-radius:4px;margin-bottom:10px;'>"
                                 f"<div style='font-weight:600;font-size:0.88em;margin-bottom:4px;'>"
-                                f"{ICON[ftype]} {title}</div>"
+                                f"{FLAG_ICON[ftype]} {title}</div>"
                                 f"<div style='font-size:0.82em;color:#444;line-height:1.5;'>"
                                 f"{detail}</div>"
                                 f"</div>",
@@ -617,29 +745,27 @@ def main():
                 "This tool does not constitute financial advice."
             )
 
-    # ── TAB 2: Side-by-Side Compare ────────────────────────────────────────────
+    # ── TAB 3: Side-by-Side Compare ────────────────────────────────────────────
     with tab_compare:
         st.subheader("Side-by-Side Comparison")
 
         compare_rows = [
-            ("What triggers payment",              lambda life: safe_get(life, "what_triggers_payment")),
-            ("Terminal illness — threshold",        lambda life: safe_get(life, "terminal_illness", "definition")),
-            ("Terminal illness — advance payment",  lambda life: safe_get(life, "terminal_illness", "advance_payment")),
-            ("Terminal illness — reduces death benefit?", lambda life: safe_get(life, "terminal_illness", "reduces_death_benefit")),
-            ("Suicide exclusion period",            lambda life: safe_get(life, "suicide_exclusion", "period")),
-            ("Suicide exclusion — applies from",   lambda life: safe_get(life, "suicide_exclusion", "applies_from")),
-            ("Waiting periods (other than suicide)",lambda life: safe_get(life, "waiting_periods")),
-            ("Policy expiry age",                  lambda life: safe_get(life, "policy_expiry", "expiry_age")),
-            ("Minimum sum insured",                lambda life: safe_get(life, "sum_insured", "minimum")),
-            ("Maximum sum insured",                lambda life: safe_get(life, "sum_insured", "maximum")),
-            ("Automatic indexation",               lambda life: safe_get(life, "sum_insured", "indexation")),
-            ("Duty of disclosure",                 lambda life: safe_get(life, "duty_of_disclosure")),
-            ("Reinstatement conditions",           lambda life: safe_get(life, "reinstatement")),
+            ("What triggers payment",                     lambda life: safe_get(life, "what_triggers_payment")),
+            ("Terminal illness — threshold",               lambda life: safe_get(life, "terminal_illness", "definition")),
+            ("Terminal illness — advance payment",         lambda life: safe_get(life, "terminal_illness", "advance_payment")),
+            ("Terminal illness — reduces death benefit?",  lambda life: safe_get(life, "terminal_illness", "reduces_death_benefit")),
+            ("Suicide exclusion period",                   lambda life: safe_get(life, "suicide_exclusion", "period")),
+            ("Suicide exclusion — applies from",           lambda life: safe_get(life, "suicide_exclusion", "applies_from")),
+            ("Waiting periods (other than suicide)",       lambda life: safe_get(life, "waiting_periods")),
+            ("Policy expiry age",                          lambda life: safe_get(life, "policy_expiry", "expiry_age")),
+            ("Minimum sum insured",                        lambda life: safe_get(life, "sum_insured", "minimum")),
+            ("Maximum sum insured",                        lambda life: safe_get(life, "sum_insured", "maximum")),
+            ("Automatic indexation",                       lambda life: safe_get(life, "sum_insured", "indexation")),
+            ("Duty of disclosure",                         lambda life: safe_get(life, "duty_of_disclosure")),
+            ("Reinstatement conditions",                   lambda life: safe_get(life, "reinstatement")),
         ]
 
-        # Build HTML table — wraps text properly, no horizontal scroll
         col_w_feature = "22%"
-        col_w_insurer = "26%"
 
         header_cells = "".join(
             f"<th style='background:{INSURER_COLORS[ins]};color:white;padding:10px 12px;"
@@ -656,7 +782,7 @@ def main():
 
         data_rows_html = ""
         for i, (label, extractor) in enumerate(compare_rows):
-            bg = "#ffffff" if i % 2 == 0 else "#f9f9f9"
+            bg    = "#ffffff" if i % 2 == 0 else "#f9f9f9"
             cells = "".join(
                 f"<td style='padding:10px 12px;vertical-align:top;font-size:0.88em;"
                 f"line-height:1.5;border-bottom:1px solid #e5e5e5;'>"
@@ -688,116 +814,8 @@ def main():
         st.markdown("*Included in the base premium — no extra cost. Each row shows the same feature across all three insurers.*")
         st.markdown("")
 
-        # Feature-aligned rows: (category label, {insurer: benefit_name_in_json})
-        # Insurer names must exactly match keys in the built_in_benefits list
-        BENEFIT_ROWS = [
-            ("Funeral / immediate advance", {
-                "TAL":    "Advanced Payment Benefit",
-                "AIA":    "Final Expenses",
-                "Zurich": "Advancement for Funeral Expenses",
-            }),
-            ("Inflation protection", {
-                "TAL":    "Inflation Protection Benefit",
-                "AIA":    "Benefit Indexation",
-                "Zurich": "Inflation Protection",
-            }),
-            ("Increase cover without health assessment", {
-                "TAL":    "Guaranteed Future Insurability Benefit",
-                "AIA":    "Guaranteed Future Insurability",
-                "Zurich": "Future Insurability",
-            }),
-            ("Financial planning reimbursement after claim", {
-                "TAL":    "Financial Planning Benefit",
-                "AIA":    "Financial Planning Reimbursement",
-                "Zurich": "Financial Planning Advice Reimbursement",
-            }),
-            ("Family accommodation support", {
-                "TAL":    "Long Distance Accommodation Benefit",
-                "AIA":    "Accommodation Benefit",
-                "Zurich": None,
-            }),
-            ("Grief / counselling support", {
-                "TAL":    "Grief Support Benefit",
-                "AIA":    "Counselling Benefit",
-                "Zurich": None,
-            }),
-            ("Pause premiums / cover suspension", {
-                "TAL":    None,
-                "AIA":    "Premium and Cover Pause Benefit",
-                "Zurich": "Cover Suspension",
-            }),
-            ("Child death benefit", {
-                "TAL":    None,
-                "AIA":    "Complimentary Family Final Expenses",
-                "Zurich": None,
-            }),
-            ("Interim accidental death cover (application period)", {
-                "TAL":    None,
-                "AIA":    "Complimentary Interim Accidental Death Cover",
-                "Zurich": None,
-            }),
-            ("Claim protector (health events pool)", {
-                "TAL":    None,
-                "AIA":    None,
-                "Zurich": "Claim Protector",
-            }),
-            ("Guaranteed policy upgrade", {
-                "TAL":    None,
-                "AIA":    None,
-                "Zurich": "Guaranteed Upgrade of Benefits",
-            }),
-            ("Premium freeze (fix premium, benefit reduces)", {
-                "TAL":    "Premium Freeze Benefit",
-                "AIA":    None,
-                "Zurich": None,
-            }),
-            ("Repatriation benefit (death overseas)", {
-                "TAL":    "Repatriation Benefit",
-                "AIA":    None,
-                "Zurich": None,
-            }),
-        ]
+        lookups = {ins: benefit_lookup(data, ins) for ins in INSURERS}
 
-        # Build lookup: insurer → {benefit_name: benefit_dict}
-        def benefit_lookup(insurer):
-            benefits = lc(data, insurer).get("built_in_benefits", [])
-            return {b["name"]: b for b in benefits if isinstance(b, dict)}
-
-        lookups = {ins: benefit_lookup(ins) for ins in INSURERS}
-
-        def cell_html(insurer, benefit_name, bg):
-            if benefit_name is None:
-                return (
-                    f"<td style='padding:10px 12px;vertical-align:top;background:{bg};"
-                    f"border-bottom:1px solid #e5e5e5;font-size:0.85em;color:#aaa;'>"
-                    f"Not included</td>"
-                )
-            b = lookups[insurer].get(benefit_name)
-            if not b:
-                return (
-                    f"<td style='padding:10px 12px;vertical-align:top;background:{bg};"
-                    f"border-bottom:1px solid #e5e5e5;font-size:0.85em;color:#aaa;'>"
-                    f"Not included</td>"
-                )
-            name = b.get("name", "—")
-            desc = b.get("description", "")
-            catch = b.get("any_catch", "")
-            has_catch = catch and catch.lower() not in ("none", "n/a", "not stated", "")
-            catch_block = (
-                f"<div style='font-size:0.82em;color:#b85c00;background:#fff3e0;"
-                f"border-left:3px solid #f0a500;padding:3px 7px;margin-top:5px;'>"
-                f"⚠️ {catch}</div>"
-            ) if has_catch else ""
-            return (
-                f"<td style='padding:10px 12px;vertical-align:top;background:{bg};"
-                f"border-bottom:1px solid #e5e5e5;'>"
-                f"<div style='font-size:0.88em;font-weight:600;margin-bottom:3px;'>{name}</div>"
-                f"<div style='font-size:0.84em;color:#444;line-height:1.45;'>{desc}</div>"
-                f"{catch_block}"
-                f"</td>"
-            )
-
-        # Header row
         header_cells = "".join(
             f"<th style='background:{INSURER_COLORS[ins]};color:white;padding:10px 12px;"
             f"font-weight:bold;font-size:0.92em;text-align:left;width:27%;'>{ins}</th>"
@@ -814,7 +832,7 @@ def main():
         ben_rows_html = ""
         for i, (label, insurer_map) in enumerate(BENEFIT_ROWS):
             bg = "#ffffff" if i % 2 == 0 else "#f9f9f9"
-            cells = "".join(cell_html(ins, insurer_map.get(ins), bg) for ins in INSURERS)
+            cells = "".join(cell_html(lookups, ins, insurer_map.get(ins), bg) for ins in INSURERS)
             ben_rows_html += (
                 f"<tr>"
                 f"<td style='padding:10px 12px;vertical-align:top;font-weight:600;"
@@ -841,9 +859,9 @@ def main():
 
         add_cols = st.columns(3)
         for col, ins in zip(add_cols, INSURERS):
-            life = lc(data, ins)
+            life    = lc(data, ins)
             options = life.get("optional_add_ons", [])
-            color = INSURER_COLORS.get(ins, "#666")
+            color   = INSURER_COLORS[ins]
             with col:
                 st.markdown(
                     f"<div style='background:{color};color:white;padding:6px 12px;"
@@ -854,11 +872,10 @@ def main():
                 if options and isinstance(options, list):
                     for o in options:
                         if isinstance(o, dict):
-                            name = o.get("name", "—")
-                            desc = o.get("description", "")
-                            st.markdown(f"**{name}**")
+                            st.markdown(f"**{o.get('name', '—')}**")
                             st.markdown(
-                                f"<div style='font-size:0.87em;color:#333;margin-bottom:10px;'>{desc}</div>",
+                                f"<div style='font-size:0.87em;color:#333;margin-bottom:10px;'>"
+                                f"{o.get('description', '')}</div>",
                                 unsafe_allow_html=True
                             )
                         else:
@@ -866,7 +883,7 @@ def main():
                 else:
                     st.markdown("*None identified.*")
 
-    # ── TAB 3: Watch Out For ───────────────────────────────────────────────────
+    # ── TAB 4: Watch Out For ───────────────────────────────────────────────────
     with tab_tricky:
         st.subheader("⚠️ Watch Out For")
         st.markdown(
@@ -875,7 +892,6 @@ def main():
             "This section is intended to help customers read those documents more informed."
         )
 
-        # ── Important policy terms customers should understand ─────────────────
         st.markdown("---")
         st.markdown("### Policy terms worth understanding before you sign")
         st.markdown(
@@ -940,16 +956,15 @@ def main():
 
         any_tricky = False
         for ins in INSURERS:
-            life = lc(data, ins)
+            life   = lc(data, ins)
             tricky = life.get("potentially_tricky_clauses", [])
-            if tricky and isinstance(tricky, list) and len(tricky) > 0:
+            if tricky and isinstance(tricky, list):
                 any_tricky = True
-                color = INSURER_COLORS.get(ins, "#666")
-                st.markdown(f"---")
+                st.markdown("---")
                 st.markdown(f"### {ins}")
                 for item in tricky:
                     if isinstance(item, dict):
-                        clause_label = item.get('clause', 'Clause').replace('$', '\\$')
+                        clause_label = item.get("clause", "Clause").replace("$", "\\$")
                         with st.expander(f"⚠️ {clause_label}"):
                             if item.get("exact_wording"):
                                 st.markdown("**PDS wording:**")
@@ -975,20 +990,14 @@ def main():
                 "weren't captured. Always read the full PDS."
             )
 
-        # Unique features comparison
         st.markdown("---")
         st.subheader("Unique Features — What Does Each Insurer Offer That Others Don't?")
 
         for ins in INSURERS:
-            life = lc(data, ins)
+            life   = lc(data, ins)
             unique = life.get("unique_features", [])
-            color = INSURER_COLORS.get(ins, "#666")
-            st.markdown(
-                f"<div style='background:{color};color:white;padding:5px 14px;"
-                f"border-radius:4px;font-weight:bold;font-size:1em;"
-                f"margin-bottom:10px;display:inline-block;'>{ins}</div>",
-                unsafe_allow_html=True
-            )
+            color  = INSURER_COLORS[ins]
+            st.markdown(insurer_header_div(ins), unsafe_allow_html=True)
             if unique and isinstance(unique, list):
                 for u in unique:
                     if isinstance(u, dict):
@@ -1014,7 +1023,7 @@ def main():
                 st.markdown("*No unique features identified.*")
             st.markdown("")
 
-    # ── TAB 4: Know Your Rights ────────────────────────────────────────────────
+    # ── TAB 5: Know Your Rights ────────────────────────────────────────────────
     with tab_rights:
         st.subheader("🛡️ Know Your Rights")
         st.markdown(
@@ -1026,8 +1035,8 @@ def main():
             "Insurance Contracts Act 1984, ASIC DDO obligations, AFCA."
         )
 
-        for section_key, section in KNOW_YOUR_RIGHTS.items():
-            st.markdown(f"---")
+        for _, section in KNOW_YOUR_RIGHTS.items():
+            st.markdown("---")
             st.markdown(f"### {section['title']}")
             for label, content in section["items"]:
                 col1, col2 = st.columns([1, 4])
@@ -1048,7 +1057,7 @@ def main():
 | 5 | **Legal advice** | Law firm specialising in insurance disputes, or Legal Aid |
 """)
 
-    # ── TAB 5: Disclaimer ──────────────────────────────────────────────────────
+    # ── TAB 6: Disclaimer ──────────────────────────────────────────────────────
     with tab_disclaimer:
         st.subheader("📌 Important Disclaimer")
 
@@ -1057,17 +1066,18 @@ def main():
             "It is not financial advice, legal advice, or a substitute for reading the full PDS.**"
         )
 
-        st.markdown("""
-### PDS versions used
-
-| Insurer | Product | PDS Version | Extracted |
-|---------|---------|-------------|-----------|
-""" + "\n".join([
+        pds_table_rows = "\n".join(
             f"| {ins} | {data.get(ins, {}).get('_meta', {}).get('product', '—')} | "
             f"{data.get(ins, {}).get('_meta', {}).get('pds_version', '—')} | "
             f"{data.get(ins, {}).get('_meta', {}).get('extracted_on', '—')} |"
             for ins in INSURERS
-        ]))
+        )
+        st.markdown(
+            "### PDS versions used\n\n"
+            "| Insurer | Product | PDS Version | Extracted |\n"
+            "|---------|---------|-------------|-----------|\n"
+            + pds_table_rows
+        )
 
         st.markdown("""
 ### What this tool does and does not do

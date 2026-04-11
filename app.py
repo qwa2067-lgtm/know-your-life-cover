@@ -884,7 +884,7 @@ def main():
             "not matching the policy outcome."
         )
 
-        with st.expander("🔴  AIA — Linked benefit payments reduce your death cover sum insured", expanded=True):
+        with st.expander("🔴  AIA — Linked benefit payments reduce your death cover sum insured", expanded=False):
             st.markdown(
                 "**What customers may expect:** I bought \\$1 million life cover. My family gets \\$1 million when I die.\n\n"
                 "**What the PDS says:** If your TPD or trauma cover is *linked* to your life cover "

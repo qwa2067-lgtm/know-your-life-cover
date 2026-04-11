@@ -952,9 +952,18 @@ def main():
                         with st.expander(f"⚠️ {item.get('clause', 'Clause')}"):
                             if item.get("exact_wording"):
                                 st.markdown("**PDS wording:**")
-                                st.code(item["exact_wording"], language=None)
+                                st.markdown(
+                                    f"<div style='font-size:0.88em;color:#444;line-height:1.6;"
+                                    f"background:#f7f7f7;padding:10px 14px;border-radius:4px;"
+                                    f"margin-bottom:8px;'>{item['exact_wording']}</div>",
+                                    unsafe_allow_html=True
+                                )
                             st.markdown("**Why this matters:**")
-                            st.warning(item.get("why_tricky", "—"))
+                            st.markdown(
+                                f"<div style='font-size:0.88em;color:#444;line-height:1.6;'>"
+                                f"{item.get('why_tricky', '—')}</div>",
+                                unsafe_allow_html=True
+                            )
                     else:
                         st.markdown(f"- {item}")
 

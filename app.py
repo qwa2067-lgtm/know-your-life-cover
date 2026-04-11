@@ -255,12 +255,11 @@ def main():
 
         # ── The Zurich structural warning ──────────────────────────────────────
         st.markdown("---")
-        st.error(
-            "**Zurich Active — important structural difference:** "
+        st.info(
+            "**Zurich Active — structural note:** "
             "Unlike TAL and AIA, Zurich combines health events (trauma) and death cover in one shared pool. "
-            "Multiple health event claims can erode your death benefit. "
-            "Without the optional Additional Death Cover, the amount your family receives on death "
-            "may be significantly less than what you bought. "
+            "Health event claims reduce the remaining death benefit sum insured. "
+            "Without the optional Additional Death Cover, the death benefit payable may be less than the original sum insured. "
             "See the **Watch Out For** tab for full details."
         )
 

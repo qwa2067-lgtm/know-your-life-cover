@@ -462,34 +462,34 @@ def main():
 
         with st.form("situation_form"):
             st.markdown("#### About you")
-            age = st.slider("Your age", min_value=18, max_value=75, value=40)
+            age = st.slider("Your age", min_value=18, max_value=75, value=38)
 
             col_q1, col_q2 = st.columns(2)
             with col_q1:
                 has_dependants = st.radio(
                     "Do you have dependants who rely on your income?",
-                    ["Yes", "No"], horizontal=True
+                    ["Yes", "No"], index=0, horizontal=True
                 )
                 has_children = st.radio(
                     "Do you have children aged 2–17?",
-                    ["Yes", "No"], horizontal=True
+                    ["Yes", "No"], index=0, horizontal=True
                 )
                 far_from_hospital = st.radio(
                     "Do you live more than 100 km from a major city hospital?",
-                    ["Yes", "No"], horizontal=True
+                    ["Yes", "No"], index=1, horizontal=True
                 )
             with col_q2:
                 pre_existing = st.radio(
                     "Do you have any pre-existing health conditions?",
-                    ["Yes", "No", "Prefer not to say"], horizontal=False
+                    ["Yes", "No", "Prefer not to say"], index=1, horizontal=False
                 )
                 financial_stress = st.radio(
                     "Could financial hardship ever make it difficult to keep paying premiums?",
-                    ["Yes", "No"], horizontal=True
+                    ["Yes", "No"], index=1, horizontal=True
                 )
                 replacing_policy = st.radio(
                     "Are you replacing an existing life insurance policy?",
-                    ["Yes", "No"], horizontal=True
+                    ["Yes", "No"], index=1, horizontal=True
                 )
 
             st.markdown("#### Your cover plans")
@@ -498,13 +498,13 @@ def main():
                 tpd_plan = st.radio(
                     "Are you planning to also take out TPD or trauma cover?",
                     ["Yes — linked to life cover", "Yes — as standalone", "No", "Not sure"],
-                    horizontal=False
+                    index=0, horizontal=False
                 )
             with col_q4:
                 terminal_concern = st.radio(
                     "Are you concerned about terminal illness risk "
                     "(e.g. family history of cancer or other serious illness)?",
-                    ["Yes", "No"], horizontal=True
+                    ["Yes", "No"], index=1, horizontal=True
                 )
 
             submitted = st.form_submit_button("Show what's relevant to me", type="primary")

@@ -996,14 +996,14 @@ def main():
                         description = u.get("description", "")
                         angle = u.get("customer_angle", "")
                         angle_html = (
-                            f"<div style='font-size:0.82em;color:#666;margin-top:4px;font-style:italic;'>{angle}</div>"
+                            f"<div style='color:#666;margin-top:4px;font-style:italic;'>{angle}</div>"
                             if angle else ""
                         )
                         st.markdown(
                             f"<div style='padding:8px 12px;border-left:3px solid {color};"
                             f"margin-bottom:8px;'>"
-                            f"<div style='font-size:0.88em;font-weight:600;margin-bottom:3px;'>{feature}</div>"
-                            f"<div style='font-size:0.85em;color:#333;line-height:1.5;'>{description}</div>"
+                            f"<div style='font-weight:600;margin-bottom:3px;'>{feature}</div>"
+                            f"<div style='color:#333;line-height:1.5;'>{description}</div>"
                             f"{angle_html}"
                             f"</div>",
                             unsafe_allow_html=True

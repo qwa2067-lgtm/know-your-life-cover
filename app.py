@@ -291,7 +291,7 @@ def main():
             "PDS versions listed in the Disclaimer tab and reflects the author's interpretation at "
             "the time of extraction. A production version would require regular PDS monitoring, "
             "independent review, and legal sign-off before being made available to the general public.\n\n"
-            "*Built by Amy Wang — actuary (FIAA), 11 years in Australian life insurance and reinsurance.*"
+            "*Built by Amy Wang, FIAA.*"
         )
 
     data = load_data()

@@ -94,4 +94,4 @@ This is a working prototype built to demonstrate the application of insurance do
 
 ---
 
-*Built by Amy Wang — actuary (FIAA), 11 years in Australian life insurance and reinsurance.*
+*Built by Amy Wang, FIAA.*
